@@ -147,9 +147,15 @@ class Bubble{
 //const bubblePop2=document.createElement("audio")
 //bubblePop2.src="./sound/bubbles-single2.wav";
 const bubblePop1=new Audio("./sound/Plop.wav");
-
-const bubblePop2=new Audio("./sound/bubbles-single2.wav");
-
+bubblePop1.addEventListener("play",function(){
+  audio.pause();
+  audio.removeEventListener("play",arguments.callee,false);
+},false);
+const bubblePop2=new Audio("./sound/bubbles-single2.wav")
+bubblePop2.addEventListener("play",function(){
+  audio.pause();
+  audio.removeEventListener("play",arguments.callee,false);
+},false);
 
 function handleBubbles(){
   if(gameFrame%50==0){
