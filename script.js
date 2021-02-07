@@ -142,10 +142,13 @@ class Bubble{
 
 
 
-const bubblePop1=document.createElement("audio")
-bubblePop1.src="./sound/Plop.wav"
-const bubblePop2=document.createElement("audio")
-bubblePop2.src="./sound/bubbles-single2.wav";
+//const bubblePop1=document.createElement("audio")
+//bubblePop1.src="./sound/Plop.wav"
+//const bubblePop2=document.createElement("audio")
+//bubblePop2.src="./sound/bubbles-single2.wav";
+const bubblePop1=new Audio("./sound/Plop.wav");
+
+const bubblePop2=new Audio("./sound/bubbles-single2.wav");
 
 
 function handleBubbles(){
