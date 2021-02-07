@@ -10,13 +10,3 @@ body {
   justify-content: center;
   align-items: center;
 }
-.canvas2 {
-  font-size: 50px;
-  color: black;
-}
-@media (max-width: 750px) {
-  .canvas2 {
-    font-size: 20px;
-    color: blue;
-  }
-}
