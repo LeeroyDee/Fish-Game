@@ -5,6 +5,8 @@ canvas.height=document.documentElement.clientHeight;
 let score=0;
 let gameFrame=0
 ctx.font=canvas.width>800?"50px Georgia":"20px Georgia";
+let gameSpeed=1;
+let gameOver=false;
 
 
 //
@@ -103,6 +105,8 @@ class Player{
 const player= new Player;
 
 const bubblesArray=[];
+const bubbleImage=new Image();
+bubbleImage.src="./img/bubble_pop_frame_01.png";
 
 
 class Bubble{
@@ -124,12 +128,13 @@ class Bubble{
     
     }
     draw(){
-      ctx.fillStyle="blue";
+     /* ctx.fillStyle="blue";
       ctx.beginPath();
       ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
       ctx.fill();
       ctx.closePath();
-      ctx.stroke();
+      ctx.stroke();*/
+      ctx.drawImage(bubbleImage,this.x-65,this.y-65,this.radius*2.6,this.radius*2.6);
       
     }
 }
@@ -146,17 +151,9 @@ class Bubble{
 //bubblePop1.src="./sound/Plop.wav"
 //const bubblePop2=document.createElement("audio")
 //bubblePop2.src="./sound/bubbles-single2.wav";
-const bubblePop1=new Audio("./sound/Plop.wav");
-bubblePop1.addEventListener("play",function(){
-  audio.pause();
-  audio.removeEventListener("play",arguments.callee,false);
-},false);
-const bubblePop2=new Audio("./sound/bubbles-single2.wav")
-bubblePop2.addEventListener("play",function(){
-  audio.pause();
-  audio.removeEventListener("play",arguments.callee,false);
-},false);
 
+const bubblePop1= new Audio("./sound/Plop.wav")
+const bubblePop2=new Audio("./sound/bubbles-single2.wav")
 function handleBubbles(){
   if(gameFrame%50==0){
     bubblesArray.push(new Bubble());
@@ -165,14 +162,10 @@ function handleBubbles(){
   for (let i = 0; i < bubblesArray.length; i++) {
     bubblesArray[i].update();
     bubblesArray[i].draw();
-    
-  }
-  for (let i = 0; i < bubblesArray.length; i++) {
     if(bubblesArray[i].y<0-bubblesArray[i].radius*2){
-      bubblesArray.splice(i,1);
-    }
-    if(bubblesArray[i]){
-      if(bubblesArray[i].distance<bubblesArray[i].radius+player.radius){
+          bubblesArray.splice(i,1);
+          i--;
+        } else if(bubblesArray[i].distance<bubblesArray[i].radius+player.radius){
         if(!bubblesArray[i].counted){
           if(bubblesArray[i].sound=="sound1"){
             bubblePop1.play();
@@ -182,21 +175,111 @@ function handleBubbles(){
           score++;
           bubblesArray[i].counted=true;
           bubblesArray.splice(i,1);
+          i--;
         }
       
       }
-    }
+    
+  }
+  for (let i = 0; i < bubblesArray.length; i++) {
+    
   }
 }
 
 
 
+const background=new Image();
+background.src="./img/background1.png"
+
+const BG={
+  x1:0,
+  x2:canvas.width,
+  y:0,
+  width:canvas.width,
+  height:canvas.height,
+}
+function handleBackground(){
+  BG.x1-=gameSpeed;
+  if(BG.x1<-BG.width)BG.x1=BG.width;
+  BG.x2-=gameSpeed;
+  if(BG.x2<-BG.width)BG.x2=BG.width;
+  ctx.drawImage(background,BG.x1,BG.y,BG.width,BG.height);
+  ctx.drawImage(background,BG.x2,BG.y,BG.width,BG.height);
+}
+
+
+//Enemies
+const enemyImage=new Image();
+enemyImage.src="./img/enemy1.png";
+
+class Enemy{
+  constructor() {
+    this.x=canvas.width+200;
+    this.y=Math.random()*(canvas.height-150)+90;
+    this.radius=60;
+    this.speed=Math.random()*2+2;
+    this.frame=0;
+    this.frameX=0;
+    this.frameY=0;
+    this.spriteWidth=418;
+    this.spriteHeight=397;
+    
+  }
+  draw(){
+    // ctx.fillStyle="red";
+    // ctx.beginPath();
+    // ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+    // ctx.fill();
+    ctx.drawImage(enemyImage,this.frameX*this.spriteWidth,this.frameY*this.spriteHeight,this.spriteWidth,this.spriteHeight,this.x-60,this.y-70,this.spriteWidth/3,this.spriteHeight/3)
+
+  }
+  update(){
+    this.x-=this.speed;
+    if(this.x<0-this.radius*2){
+      this.x=canvas.width+200;
+      this.y=Math.random()*(canvas.height-150)
+    }
+    if(gameFrame%5==0){
+      this.frame++;
+      if(this.frame>=12)this.frame=0;
+      if(this.frame==3||this.frame==7||this.frame||11){
+        this.frameX=0;
+      }else{
+        this.frameX++;
+      }
+      if(this.frame<3)this.frameY=0;
+      else if(this.frame<7)this.frameY=1;
+       else if(this.frame<11)this.frameY=2;
+        else this.frameY=0;
+    }
+    const dx=this.x-player.x
+    const dy=this.y-player.y;
+    const distance=Math.sqrt(dx*dx+dy*dy);
+    if(distance<this.radius+player.radius){
+      handleGameOver();
+    }
+  }
+}
+const enemy1=new Enemy();
+function handleEnemies(){
+ 
+  enemy1.draw();
+   enemy1.update();
+}
+function handleGameOver(){
+  ctx.fillStyle="white";
+  ctx.fillText("Game Over неудачник:)",canvas.width/5,canvas.height/2);
+  gameOver=true;
+}
+
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height)
+  handleBackground()
   handleBubbles();
 
   player.update();
   player.draw();
+  handleEnemies();
   ctx.fillStyle="black";
   ctx.fillText("score:"+score,10,50)
   if(canvas.width<=375){
@@ -204,6 +287,9 @@ function animate(){
   ctx.fillText("привет:)",100,100)
   }
   gameFrame++;
-  requestAnimationFrame(animate);
-}
+  if(!gameOver){requestAnimationFrame(animate);}
+  }
 animate();
+window.addEventListener("resize",function(){
+  canvasPosition=canvas.getBoundingClientRect();
+})

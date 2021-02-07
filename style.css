@@ -10,3 +10,6 @@ body {
   justify-content: center;
   align-items: center;
 }
+#canvas1 {
+  background: linear-gradient(to bottom, lightblue, darkblue, black);
+}
