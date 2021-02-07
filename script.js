@@ -1,15 +1,17 @@
 const canvas=document.getElementById("canvas1");
 const ctx=canvas.getContext("2d");
-canvas.width=800;
-canvas.height=500;
+canvas.width=document.documentElement.clientWidth;
+canvas.height=document.documentElement.clientHeight;
 let score=0;
 let gameFrame=0
-ctx.font="50px Georgia";
-///
+ctx.font=canvas.width>800?"50px Georgia":"20px Georgia";
+
+
 //
-///
-///
-///
+//
+//
+//
+//
 //
 
 // Mouse interactivity
@@ -188,7 +190,10 @@ function animate(){
   player.draw();
   ctx.fillStyle="black";
   ctx.fillText("score:"+score,10,50)
-
+  if(canvas.width<=375){
+    ctx.fillStyle="blue";
+  ctx.fillText("привет:)",100,100)
+  }
   gameFrame++;
   requestAnimationFrame(animate);
 }
