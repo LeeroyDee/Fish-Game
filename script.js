@@ -85,7 +85,20 @@ class Player{
     //ctx.fill();
     //ctx.closePath();
     //ctx.fillRect(this.x,this.y,this.radius,10)
-
+      if(gameFrame%10==0){
+        this.frame++;
+        if(this.frame==12)this.frame=0;
+        if(this.frame==3||this.frame==7||this.frame==11){
+          this.frameX=0;
+        }else{this.frameX++;}
+        if(this.frame>3){
+          this.frameY=0;
+        }else if(this.frame>7){
+          this.frameY=1;
+        }else if(this.frame>11){
+          this.frameY=2
+        }else this.frameY=0;
+      }
     
       ctx.save()
       ctx.translate(this.x,this.y);
@@ -106,7 +119,7 @@ const player= new Player;
 
 const bubblesArray=[];
 const bubbleImage=new Image();
-bubbleImage.src="./img/bubble_pop_frame_01.png";
+bubbleImage.src="./img/bubble_pop.png";
 
 
 class Bubble{
@@ -118,6 +131,12 @@ class Bubble{
       this.distance;
       this.counted=false;
       this.sound=Math.random()<=0.5?"sound1":"sound2";
+      this.frameX=0;
+      this.frameY=0;
+      this.frame=0
+      this.spriteWidth = 512;
+      this.spriteHeight = 512;
+      this.pop = false;
 
     }
     update(){
@@ -128,18 +147,18 @@ class Bubble{
     
     }
     draw(){
-     /* ctx.fillStyle="blue";
-      ctx.beginPath();
-      ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
-      ctx.fill();
-      ctx.closePath();
-      ctx.stroke();*/
-      ctx.drawImage(bubbleImage,this.x-65,this.y-65,this.radius*2.6,this.radius*2.6);
+      // ctx.fillStyle="blue";
+      // ctx.beginPath();
+      // ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+      // ctx.fill();
+      // ctx.closePath();
+      // ctx.stroke();
+      ctx.drawImage(bubbleImage,this.spriteWidth*this.frameX,this.frameY*this.spriteHeight,this.spriteWidth,this.spriteHeight,this.x-65,this.y-65, this.spriteWidth/4,this.spriteHeight/4);
       
     }
 }
 
-///////////////////
+//////////////////
 ////////////////////
 ///////////////////
 ////////////////////
@@ -154,38 +173,85 @@ class Bubble{
 
 const bubblePop1= new Audio("./sound/Plop.wav")
 const bubblePop2=new Audio("./sound/bubbles-single2.wav")
-function handleBubbles(){
-  if(gameFrame%50==0){
-    bubblesArray.push(new Bubble());
-    console.log(bubblesArray.length);
-  }
-  for (let i = 0; i < bubblesArray.length; i++) {
-    bubblesArray[i].update();
-    bubblesArray[i].draw();
-    if(bubblesArray[i].y<0-bubblesArray[i].radius*2){
-          bubblesArray.splice(i,1);
-          i--;
-        } else if(bubblesArray[i].distance<bubblesArray[i].radius+player.radius){
-        if(!bubblesArray[i].counted){
-          if(bubblesArray[i].sound=="sound1"){
-            bubblePop1.play();
-          }else{
-            bubblePop2.play();
-          }
-          score++;
-          bubblesArray[i].counted=true;
-          bubblesArray.splice(i,1);
-          i--;
-        }
+// function handleBubbles(){
+//   if(gameFrame%50==0){
+//     bubblesArray.push(new Bubble());
+//     console.log(bubblesArray.length);
+//   }
+//   for (let i = 0; i < bubblesArray.length; i++) {
+//     bubblesArray[i].update();
+//     bubblesArray[i].draw();
+//     if(bubblesArray[i].y<0-bubblesArray[i].radius*2){
+//           bubblesArray.splice(i,1);
+//           i--;
+//         } else if(bubblesArray[i].distance<bubblesArray[i].radius+player.radius){
+//         if(!bubblesArray[i].counted){
+//           if(bubblesArray[i].sound=="sound1"){
+//             bubblePop1.play();
+//           }else{
+//             bubblePop2.play();
+//           }
+//           score++;
+//           bubblesArray[i].counted=true;
+//           bubblesArray.splice(i,1);
+//           i--;
+//         }
       
-      }
+//       }
     
-  }
-  for (let i = 0; i < bubblesArray.length; i++) {
+//   }
+//   for (let i = 0; i < bubblesArray.length; i++) {
     
-  }
-}
+//   }
+// }
+function handleBubbles(){
+    for (let i = 0; i < bubblesArray.length; i++){
+        if (bubblesArray[i].y < 0 - canvas.height){
+            bubblesArray.splice(i, 1);
+        }
+    }
+    for (let i = 0; i < bubblesArray.length; i++){
+        if (bubblesArray[i].distance < bubblesArray[i].radius + player.radius){
+            popAndRemove(i);
+        }
+    }
+    for (let i = 0; i < bubblesArray.length; i++){
+        bubblesArray[i].update();
+        bubblesArray[i].draw();
+    }
+    if (gameFrame % 50 == 0) {
+        bubblesArray.push(new Bubble());
 
+    }
+}
+function popAndRemove(i){
+    if (bubblesArray[i]) {
+        if (!bubblesArray[i].counted){
+            score++;
+            if(bubblesArray[i].sound=="sound1"){
+               bubblePop1.play();
+                }else{
+             bubblePop2.play();
+                }
+
+        } 
+        
+        bubblesArray[i].counted = true;
+        bubblesArray[i].frame++;
+        if(bubblesArray[i].frame==3){
+          bubblesArray[i].frameX=0;
+        }else bubblesArray[i].frameX++;
+        if(bubblesArray[i].frame<3){
+          bubblesArray[i].frameY=0;
+        }else if(bubblesArray[i].frame<7){
+          bubblesArray[i].frameY=1
+        }else bubblesArray[i].frameY=0
+        if (bubblesArray[i].frame >7) bubblesArray[i].pop = true;
+        if (bubblesArray[i].pop) bubblesArray.splice(i, 1);
+        requestAnimationFrame(popAndRemove);
+    }
+
+}
 
 
 const background=new Image();
