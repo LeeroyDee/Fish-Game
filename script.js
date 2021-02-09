@@ -9,6 +9,26 @@ let gameSpeed=1;
 let gameOver=false;
 
 
+
+const bubblePop1= new Audio("./sound/Plop.wav")
+const bubblePop2=new Audio("./sound/bubbles-single2.wav")
+var audioWeWantToUnlock =[];
+audioWeWantToUnlock.push(bubblePop1);
+audioWeWantToUnlock.push(bubblePop2);
+
+
+
+canvas.addEventListener("touchstart",function(){
+  if(audioWeWantToUnlock){
+    for(let audio of audioWeWantToUnlock){
+    debugger;
+      audio.play();
+    audio.pause();
+    audio.currentTime=0;
+    }
+audioWeWantToUnlock=null;
+  }
+},false);
 //
 //
 //
@@ -171,8 +191,8 @@ class Bubble{
 //const bubblePop2=document.createElement("audio")
 //bubblePop2.src="./sound/bubbles-single2.wav";
 
-const bubblePop1= new Audio("./sound/Plop.wav")
-const bubblePop2=new Audio("./sound/bubbles-single2.wav")
+// const bubblePop1= new Audio("./sound/Plop.wav")
+// const bubblePop2=new Audio("./sound/bubbles-single2.wav")
 // function handleBubbles(){
 //   if(gameFrame%50==0){
 //     bubblesArray.push(new Bubble());
@@ -203,7 +223,7 @@ const bubblePop2=new Audio("./sound/bubbles-single2.wav")
 //   for (let i = 0; i < bubblesArray.length; i++) {
     
 //   }
-// }
+
 function handleBubbles(){
     for (let i = 0; i < bubblesArray.length; i++){
         if (bubblesArray[i].y < 0 - canvas.height){
@@ -232,7 +252,7 @@ function popAndRemove(i){
                bubblePop1.play();
                 }else{
              bubblePop2.play();
-                }
+              }
 
         } 
         
