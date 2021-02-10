@@ -7,7 +7,7 @@ let gameFrame=0
 ctx.font=canvas.width>800?"50px Georgia":"20px Georgia";
 let gameSpeed=1;
 let gameOver=false;
-
+let a=canvas.width>376?1:0.5;
 
 
 const bubblePop1= new Audio("./sound/Plop.wav")
@@ -21,7 +21,7 @@ audioWeWantToUnlock.push(bubblePop2);
 canvas.addEventListener("touchstart",function(){
   if(audioWeWantToUnlock){
     for(let audio of audioWeWantToUnlock){
-    debugger;
+  
       audio.play();
     audio.pause();
     audio.currentTime=0;
@@ -68,7 +68,7 @@ class Player{
   constructor(){
     this.x=canvas.width;
     this.y=canvas.height/2;
-    this.radius=50;
+    this.radius=50*a;
     this.angle=0;
     this.frameX=0;
     this.frameY=0;
@@ -82,11 +82,11 @@ class Player{
     const dy=this.y-mouse.y;
     
     if(mouse.x!=this.x){
-      this.x-=dx/20;
+      this.x-=dx/(20*a);
 
     }
       if(mouse.y!=this.y){
-      this.y-=dy/20;
+      this.y-=dy/(20*a);
     }
     let theta=Math.atan2(dy,dx);
     this.angle=theta;
@@ -99,12 +99,12 @@ class Player{
       ctx.lineTo(mouse.x,mouse.y);
       ctx.stroke();
     }
-    //ctx.fillStyle="red";
-    //ctx.beginPath();
-    //ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
-    //ctx.fill();
-    //ctx.closePath();
-    //ctx.fillRect(this.x,this.y,this.radius,10)
+    // ctx.fillStyle="red";
+    // ctx.beginPath();
+    // ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+    // ctx.fill();
+    // ctx.closePath();
+    // ctx.fillRect(this.x,this.y,this.radius,10)
       if(gameFrame%10==0){
         this.frame++;
         if(this.frame==12)this.frame=0;
@@ -124,9 +124,9 @@ class Player{
       ctx.translate(this.x,this.y);
       ctx.rotate(this.angle);
        if (this.x >= mouse.x){
-            ctx.drawImage(playerLeft, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 60, 0 - 45, this.spriteWidth /4, this.spriteHeight /4);
+            ctx.drawImage(playerLeft, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 60*a, 0 - 45*a, this.spriteWidth /4*a, this.spriteHeight /4*a);
         } else {
-            ctx.drawImage(playerRight, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 60, 0 - 45, this.spriteWidth /4, this.spriteHeight /4);
+            ctx.drawImage(playerRight, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 60*a, 0 - 45*a, this.spriteWidth /4*a, this.spriteHeight /4*a);
         }
       ctx.restore();
     
@@ -146,14 +146,14 @@ class Bubble{
     constructor(){
       this.x=Math.random()*canvas.width;
       this.y=canvas.height+100;
-      this.radius=50;
+      this.radius=50*a;
       this.speed=Math.random()*5+1;
       this.distance;
       this.counted=false;
       this.sound=Math.random()<=0.5?"sound1":"sound2";
       this.frameX=0;
       this.frameY=0;
-      this.frame=0
+      this.frame=0;
       this.spriteWidth = 512;
       this.spriteHeight = 512;
       this.pop = false;
@@ -173,7 +173,7 @@ class Bubble{
       // ctx.fill();
       // ctx.closePath();
       // ctx.stroke();
-      ctx.drawImage(bubbleImage,this.spriteWidth*this.frameX,this.frameY*this.spriteHeight,this.spriteWidth,this.spriteHeight,this.x-65,this.y-65, this.spriteWidth/4,this.spriteHeight/4);
+      ctx.drawImage(bubbleImage,this.spriteWidth*this.frameX,this.frameY*this.spriteHeight,this.spriteWidth,this.spriteHeight,this.x-65*a,this.y-65*a, this.spriteWidth/4*a,this.spriteHeight/4*a);
       
     }
 }
@@ -251,7 +251,7 @@ function popAndRemove(i){
             if(bubblesArray[i].sound=="sound1"){
                bubblePop1.play();
                 }else{
-             bubblePop2.play();
+              bubblePop2.play();
               }
 
         } 
@@ -261,12 +261,13 @@ function popAndRemove(i){
         if(bubblesArray[i].frame==3){
           bubblesArray[i].frameX=0;
         }else bubblesArray[i].frameX++;
-        if(bubblesArray[i].frame<3){
-          bubblesArray[i].frameY=0;
-        }else if(bubblesArray[i].frame<7){
-          bubblesArray[i].frameY=1
-        }else bubblesArray[i].frameY=0
-        if (bubblesArray[i].frame >7) bubblesArray[i].pop = true;
+        bubblesArray[i].frameY>2?bubblesArray[i].frameY=1:bubblesArray[i].frameY=0;
+        // if(bubblesArray[i].frame>2){
+        //   bubblesArray[i].frameY=1;
+        // }else if(bubblesArray[i].frame<7){
+        //   bubblesArray[i].frameY=1
+        // }else bubblesArray[i].frameY=0
+        if (bubblesArray[i].frame>5) bubblesArray[i].pop = true;
         if (bubblesArray[i].pop) bubblesArray.splice(i, 1);
         requestAnimationFrame(popAndRemove);
     }
@@ -302,8 +303,8 @@ class Enemy{
   constructor() {
     this.x=canvas.width+200;
     this.y=Math.random()*(canvas.height-150)+90;
-    this.radius=60;
-    this.speed=Math.random()*2+2;
+    this.radius=60*a;
+    this.speed=canvas.width>377?(Math.random()*2+2):1;
     this.frame=0;
     this.frameX=0;
     this.frameY=0;
@@ -316,7 +317,7 @@ class Enemy{
     // ctx.beginPath();
     // ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
     // ctx.fill();
-    ctx.drawImage(enemyImage,this.frameX*this.spriteWidth,this.frameY*this.spriteHeight,this.spriteWidth,this.spriteHeight,this.x-60,this.y-70,this.spriteWidth/3,this.spriteHeight/3)
+    ctx.drawImage(enemyImage,this.frameX*this.spriteWidth,this.frameY*this.spriteHeight,this.spriteWidth,this.spriteHeight,this.x-60*a,this.y-70*a,this.spriteWidth/3*a,this.spriteHeight/3*a)
 
   }
   update(){
