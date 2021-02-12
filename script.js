@@ -386,7 +386,12 @@ let buttonExit=document.getElementById("buttonEx")
     window.close();
   }
 let buttonReset=document.getElementById("buttonRe");
-buttonReset.onclick=location.reload;
+buttonReset.onclick=function(){
+  location.reload();
+  buttonStart.style.display="none";
+  animate();
+
+}
 let buttonStart=document.getElementById("button");
 buttonStart.onclick=function(){
   buttonStart.style.display="none";
