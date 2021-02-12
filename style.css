@@ -13,3 +13,29 @@ body {
 #canvas1 {
   background: linear-gradient(to bottom, lightblue, darkblue, black);
 }
+.buttonStart {
+  padding: 10px 30px 10px 30px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+.buttonExit {
+  padding: 10px 30px 10px 30px;
+  position: absolute;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 70%;
+  display: none;
+}
+.buttonReset {
+  padding: 10px 30px 10px 30px;
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  display: none;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}

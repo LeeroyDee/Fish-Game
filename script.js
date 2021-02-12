@@ -1,3 +1,5 @@
+
+
 const canvas=document.getElementById("canvas1");
 const ctx=canvas.getContext("2d");
 canvas.width=document.documentElement.clientWidth;
@@ -356,6 +358,8 @@ function handleEnemies(){
 function handleGameOver(){
   ctx.fillStyle="white";
   ctx.fillText("Game Over неудачник:)",canvas.width/5,canvas.height/2);
+  buttonExit.style.display="block";
+  buttonReset.style.display="block";
   gameOver=true;
 }
 
@@ -376,7 +380,19 @@ function animate(){
   gameFrame++;
   if(!gameOver){requestAnimationFrame(animate);}
   }
-animate();
+  //button start,reset,Exit
+let buttonExit=document.getElementById("buttonEx")
+  buttonExit.onclick=function(){
+    window.close();
+  }
+let buttonReset=document.getElementById("buttonRe");
+buttonReset.onclick=location.reload;
+let buttonStart=document.getElementById("button");
+buttonStart.onclick=function(){
+  buttonStart.style.display="none";
+  animate();
+}
+//animate();
 window.addEventListener("resize",function(){
   canvasPosition=canvas.getBoundingClientRect();
 })
