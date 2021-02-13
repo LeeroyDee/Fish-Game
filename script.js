@@ -4,6 +4,8 @@ const canvas=document.getElementById("canvas1");
 const ctx=canvas.getContext("2d");
 canvas.width=document.documentElement.clientWidth;
 canvas.height=document.documentElement.clientHeight;
+let input =document.getElementById("input1");
+input.style.display =canvas.width>500?"block":"none";
 let score=0;
 let gameFrame=0
 ctx.font="40px Georgia";
@@ -325,7 +327,7 @@ function init2() {
 let adjustX=-3;
 let adjustY=-3;
 ctx.fillStyle="white";
-ctx.font =canvas.width>500?"20px Verdana":'10px Verdana';
+ctx.font =canvas.width>500?"25px Verdana":'17px Verdana';
 ctx.fillText(input.value,5,60);
 const textCoordinates=ctx.getImageData(0,0,200,60);
     bubbleTextArray = [];
@@ -428,7 +430,7 @@ function animate(){
     
     ctx.fillStyle="rgba(250,80,40,1)";
   ctx.font=canvas.width>500?'50px Georgia':'20px Georgia';
-  ctx.fillText(input.value+" привет:)",100,100)
+  ctx.fillText(" привет:)",100,100)
   }
   gameFrame++;
   if(!gameOver){requestAnimationFrame(animate);}
@@ -456,7 +458,7 @@ buttonStart.onclick=function(){
 ////
 ///input name
 //
-let input =document.getElementById("input1");
+
 //animate();
 window.addEventListener("resize",function(){
   canvasPosition=canvas.getBoundingClientRect();
