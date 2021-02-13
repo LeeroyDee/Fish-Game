@@ -86,11 +86,11 @@ class Player{
     const dy=this.y-mouse.y;
     
     if(mouse.x!=this.x){
-      this.x-=dx/(20*a);
+      this.x-=dx/(10*a);
 
     }
       if(mouse.y!=this.y){
-      this.y-=dy/(20*a);
+      this.y-=dy/(10*a);
     }
     let theta=Math.atan2(dy,dx);
     this.angle=theta;
