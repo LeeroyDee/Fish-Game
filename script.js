@@ -6,7 +6,7 @@ canvas.width=document.documentElement.clientWidth;
 canvas.height=document.documentElement.clientHeight;
 let score=0;
 let gameFrame=0
-ctx.font=canvas.width>800?"50px Georgia":"20px Georgia";
+ctx.font="40px Georgia";
 let gameSpeed=1;
 let gameOver=false;
 let a=canvas.width>376?1:0.5;
@@ -180,52 +180,6 @@ class Bubble{
     }
 }
 
-//////////////////
-////////////////////
-///////////////////
-////////////////////
-
-
-
-
-//const bubblePop1=document.createElement("audio")
-//bubblePop1.src="./sound/Plop.wav"
-//const bubblePop2=document.createElement("audio")
-//bubblePop2.src="./sound/bubbles-single2.wav";
-
-// const bubblePop1= new Audio("./sound/Plop.wav")
-// const bubblePop2=new Audio("./sound/bubbles-single2.wav")
-// function handleBubbles(){
-//   if(gameFrame%50==0){
-//     bubblesArray.push(new Bubble());
-//     console.log(bubblesArray.length);
-//   }
-//   for (let i = 0; i < bubblesArray.length; i++) {
-//     bubblesArray[i].update();
-//     bubblesArray[i].draw();
-//     if(bubblesArray[i].y<0-bubblesArray[i].radius*2){
-//           bubblesArray.splice(i,1);
-//           i--;
-//         } else if(bubblesArray[i].distance<bubblesArray[i].radius+player.radius){
-//         if(!bubblesArray[i].counted){
-//           if(bubblesArray[i].sound=="sound1"){
-//             bubblePop1.play();
-//           }else{
-//             bubblePop2.play();
-//           }
-//           score++;
-//           bubblesArray[i].counted=true;
-//           bubblesArray.splice(i,1);
-//           i--;
-//         }
-      
-//       }
-    
-//   }
-//   for (let i = 0; i < bubblesArray.length; i++) {
-    
-//   }
-
 function handleBubbles(){
     for (let i = 0; i < bubblesArray.length; i++){
         if (bubblesArray[i].y < 0 - canvas.height){
@@ -264,11 +218,7 @@ function popAndRemove(i){
           bubblesArray[i].frameX=0;
         }else bubblesArray[i].frameX++;
         bubblesArray[i].frameY>2?bubblesArray[i].frameY=1:bubblesArray[i].frameY=0;
-        // if(bubblesArray[i].frame>2){
-        //   bubblesArray[i].frameY=1;
-        // }else if(bubblesArray[i].frame<7){
-        //   bubblesArray[i].frameY=1
-        // }else bubblesArray[i].frameY=0
+     
         if (bubblesArray[i].frame>5) bubblesArray[i].pop = true;
         if (bubblesArray[i].pop) bubblesArray.splice(i, 1);
         requestAnimationFrame(popAndRemove);
@@ -295,6 +245,101 @@ function handleBackground(){
   ctx.drawImage(background,BG.x1,BG.y,BG.width,BG.height);
   ctx.drawImage(background,BG.x2,BG.y,BG.width,BG.height);
 }
+/****Bubble Text ****/
+
+let bubbleTextArray=[];
+
+
+class Particle2 {
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+        this.size = 7;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.density = (Math.random() * 15) + 1;
+        this.distance;
+    }
+    draw() {
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(34,147,214,1)';
+        ctx.fillStyle = 'rgba(255,255,255,1)';
+        ctx.beginPath();
+        if (this.distance < 50){
+            this.size = 14;
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.arc(this.x + 4, this.y -4, this.size/3, 0, Math.PI * 2);
+            ctx.arc(this.x -6, this.y -6, this.size/5, 0, Math.PI * 2);
+        } else if (this.distance <= 80){
+            this.size = 8;
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.arc(this.x + 3, this.y -3, this.size/2.5, 0, Math.PI * 2);
+            ctx.arc(this.x -4, this.y -4, this.size/4.5, 0, Math.PI * 2);
+        }
+        else {
+            this.size = 5;
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.arc(this.x + 1, this.y -1, this.size/3, 0, Math.PI * 2);
+        }
+        ctx.closePath();
+        ctx.fill()
+    }
+    update(){
+        let dx = player.x - this.x;
+        let dy = player.y - this.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        this.distance = distance;
+        let forceDirectionX = dx / distance;
+        let forceDirectionY = dy / distance;
+        let maxDistance = 100;
+        let force = (maxDistance - distance) / maxDistance;
+        let directionX = forceDirectionX * force * this.density;
+        let directionY = forceDirectionY * force * this.density;
+
+        if (distance < 100){
+            this.x -= directionX;
+            this.y -= directionY;
+        } else {
+            if (this.x !== this.baseX){
+                let dx = this.x - this.baseX;
+                this.x -= dx/20;
+            }
+            if (this.y !== this.baseY){
+                let dy = this.y - this.baseY;
+                this.y -= dy/20;
+            }
+        }
+    }
+}
+function init2() {
+
+let adjustX=-3;
+let adjustY=-3;
+ctx.fillStyle="white";
+ctx.font =canvas.width>500?"20px Verdana":'10px Verdana';
+ctx.fillText(input.value,5,60);
+const textCoordinates=ctx.getImageData(0,0,200,60);
+    bubbleTextArray = [];
+    for (let y = 0, y2 = textCoordinates.height; y < y2; y++){
+        for (let x = 0, x2 = textCoordinates.width; x < x2; x++){
+            if (textCoordinates.data[(y * 4 * textCoordinates.width) + (x * 4) + 3] > 128){
+                let positionX = x + adjustX;
+                let positionY = y + adjustY;
+                bubbleTextArray.push(new Particle2(positionX * 8, positionY * 8));
+            }
+        }
+    }
+}
+// init2();
 
 
 //Enemies
@@ -357,7 +402,8 @@ function handleEnemies(){
 }
 function handleGameOver(){
   ctx.fillStyle="white";
-  ctx.fillText("Game Over неудачник:)",canvas.width/5,canvas.height/2);
+  ctx.font=canvas.width>500?'120px Arial':"40px Arial"
+  ctx.fillText("Game over ",canvas.width/2-100,canvas.height/2);
   buttonExit.style.display="block";
   buttonReset.style.display="block";
   gameOver=true;
@@ -365,6 +411,10 @@ function handleGameOver(){
 
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height)
+  for (let i = 0; i < bubbleTextArray.length; i++){
+        bubbleTextArray[i].draw();
+        bubbleTextArray[i].update();
+    }
   handleBackground()
   handleBubbles();
 
@@ -372,10 +422,13 @@ function animate(){
   player.draw();
   handleEnemies();
   ctx.fillStyle="black";
+  ctx.font = '50px Georgia'
   ctx.fillText("score:"+score,10,50)
   if(canvas.width<=375){
-    ctx.fillStyle="blue";
-  ctx.fillText("привет:)",100,100)
+    
+    ctx.fillStyle="rgba(250,80,40,1)";
+  ctx.font=canvas.width>500?'50px Georgia':'20px Georgia';
+  ctx.fillText(input.value+" привет:)",100,100)
   }
   gameFrame++;
   if(!gameOver){requestAnimationFrame(animate);}
@@ -383,7 +436,7 @@ function animate(){
   //button start,reset,Exit
 let buttonExit=document.getElementById("buttonEx")
   buttonExit.onclick=function(){
-    window.close();
+   // window.close();
   }
 let buttonReset=document.getElementById("buttonRe");
 buttonReset.onclick=function(){
@@ -394,10 +447,39 @@ buttonReset.onclick=function(){
 }
 let buttonStart=document.getElementById("button");
 buttonStart.onclick=function(){
+  
+  init2();
+  input.style.display="none";
   buttonStart.style.display="none";
   animate();
 }
+////
+///input name
+//
+let input =document.getElementById("input1");
 //animate();
 window.addEventListener("resize",function(){
   canvasPosition=canvas.getBoundingClientRect();
 })
+//
+//escape button
+//
+let opRunBt={
+  //кнопка которую будем использовать:)
+  field:document.getElementById("buttonEx"),
+  events:{
+    mouseover: e=>{
+  // max canvas.width
+  // max canvas.height
+  //width =
+    opRunBt.field.style.left=Math.random()*document.documentElement.clientWidth-opRunBt.field.style.width+"px";
+    opRunBt.field.style.top=Math.random()*document.documentElement.clientHeight-opRunBt.field.style.width+"px";
+      }
+    },
+}
+
+opRunBt.field.addEventListener("mouseover",opRunBt.events.mouseover);
+
+
+
+
